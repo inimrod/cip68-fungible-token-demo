@@ -1,10 +1,9 @@
-# cip68-fungible-token-demo
+# Cardano Cip68 Fungible Token Demo
 
-A sample Cardano CIP-68 fungible token implemented with Helios.
+A sample Cardano CIP-68 fungible token implemented with [Helios](https://www.hyperion-bt.org/helios-book/).
 
 ## Requires:
-node v17.5 or later because of 'fetch' api used by helios
-preferably v18
+node v17.5 or later because of `fetch` api used by [Helios](https://www.hyperion-bt.org/helios-book/), preferably v18.
 
 ## Prep:
 1. Get your Blockfrost API key at https://blockfrost.io/
@@ -21,7 +20,8 @@ Always run scripts from project root directory because env vars and fs.read para
 
 
 ## Author
-Nimrod Flores / Staking Rocks! [PHRCK] Cardano stake pool
+Nimrod Flores / [Staking Rocks! [PHRCK]](https://staking.rocks) Cardano stake pool
+
 https://staking.rocks
 
 ## License
