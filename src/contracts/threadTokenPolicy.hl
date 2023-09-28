@@ -1,0 +1,19 @@
+minting threadTokenPolicy
+
+const seedTxId: TxId = TxId::new(#)
+const seedTxIx: Int = 69
+const outputId: TxOutputId = TxOutputId::new(seedTxId, seedTxIx)
+
+func main(_, ctx: ScriptContext) -> Bool {
+    tx: Tx = ctx.tx;
+    nftAssetclass: AssetClass = AssetClass::new(
+        ctx.get_current_minting_policy_hash(),
+        "tokenSupplyState".encode_utf8()
+    );
+    valueMinted: Value = tx.minted;
+
+    (valueMinted == Value::new(nftAssetclass, 1)).trace("Only 1 thread NFT minted: ") &&
+
+    tx.inputs.any((input: TxInput) -> Bool {input.output_id == outputId})
+        .trace("Seed UTXO consumed in this tx: ")
+}

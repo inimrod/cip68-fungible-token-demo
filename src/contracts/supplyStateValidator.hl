@@ -1,0 +1,61 @@
+spending supplyStateValidator
+
+struct Datum {
+    refTokenAssetClass: AssetClass
+    userTokenAssetClass: AssetClass
+    refTokenCurrentSupply: Int
+    userTokenCurrentSupply: Int
+    func update(self, updatedRefTokenSupply: Int, updatedUserTokenSupply: Int) -> Datum {
+        self.copy(
+            refTokenCurrentSupply: updatedRefTokenSupply, 
+            userTokenCurrentSupply: updatedUserTokenSupply
+        )
+    }
+}
+
+enum Redeemer {
+    Mint
+    Close
+}
+
+// Contract parameters 
+const adminPkh: PubKeyHash = PubKeyHash::new(#)
+const threadTokenMPH: MintingPolicyHash = MintingPolicyHash::new(#)
+const stateThreadToken: AssetClass = AssetClass::new(
+    threadTokenMPH, "tokenSupplyState".encode_utf8()
+)
+const maxSupply: Int = 21_000_000_000_000
+
+func main(datum: Datum, redeemer: Redeemer, ctx: ScriptContext) -> Bool {
+    tx: Tx = ctx.tx;
+    validatorHash: ValidatorHash = ctx.get_current_validator_hash();
+    mintedRefToken: Int = tx.minted.get_safe(datum.refTokenAssetClass);
+    mintedUserToken: Int = tx.minted.get_safe(datum.userTokenAssetClass);
+    updatedRefTokenSupply: Int = datum.refTokenCurrentSupply + mintedRefToken;
+    updatedUserTokenSupply: Int = datum.userTokenCurrentSupply + mintedUserToken;
+    expectedNewDatum: Datum = datum.update(updatedRefTokenSupply, updatedUserTokenSupply);
+    isInline: Bool = true;
+    
+    // check that the tx is signed by admin
+    tx.is_signed_by(adminPkh).trace("admin signed: ") &&
+
+    redeemer.switch {
+        Mint => {
+            // make sure don't exceed max supply rule:
+            (updatedRefTokenSupply <= 1).trace("CIP68 ref token limited to 1: ") &&
+            (updatedUserTokenSupply <= maxSupply).trace("max supply preserved: ") &&
+
+            // check that the new state UTxO contains the updated datum 
+            // and contains the thread NFT in the value locked
+            (tx
+                .value_locked_by_datum(validatorHash, expectedNewDatum, isInline)
+                .contains( Value::new(stateThreadToken, 1) )
+            ).trace("datum updated as expected: ")
+        },
+        Close => {
+            // closing allows the UTXO and value locked at this script to be spent away.
+            // only allow closing if supply goes down to zero and the state utxo is no longer needed.
+            (updatedUserTokenSupply == 0).trace("supply is now zero: ")
+        }
+    }
+}

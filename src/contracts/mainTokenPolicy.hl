@@ -1,0 +1,29 @@
+minting mainTokenPolicy
+
+// policy parameters
+const supplyStateValidatorHash: ValidatorHash = ValidatorHash::new(#)
+const adminPkh: PubKeyHash = PubKeyHash::new(#)
+const refTokenName: ByteArray = #
+const userTokenName: ByteArray = #
+const threadTokenMPH: MintingPolicyHash = MintingPolicyHash::new(#)
+const stateThreadToken: AssetClass = AssetClass::new(
+    threadTokenMPH, "tokenSupplyState".encode_utf8()
+)
+
+func main(_, ctx: ScriptContext) -> Bool {
+    tx: Tx = ctx.tx;
+    thisMPH: MintingPolicyHash = ctx.get_current_minting_policy_hash();
+    minted: Map[ByteArray]Int = tx.minted.get_policy(thisMPH);
+
+    // check that the tx is signed by admin
+    tx.is_signed_by(adminPkh).trace("admin signed: ") &&
+
+    // check that only our ref and user tokens are minted under this policy:
+    minted.all((tokenName: ByteArray, _) -> Bool {
+        tokenName == refTokenName || tokenName == userTokenName
+    }).trace("allowed tokenName/s: ") &&
+
+    // check that the stateThreadToken is included in the outputs
+    tx.value_locked_by(supplyStateValidatorHash)
+      .contains( Value::new(stateThreadToken, 1)).trace("stateThreadToken in outputs: ")
+}

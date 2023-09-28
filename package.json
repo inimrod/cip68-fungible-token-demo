@@ -1,0 +1,25 @@
+{
+  "name": "cip68-fungible-token-demo",
+  "version": "0.0.1",
+  "description": "A sample Cardano CIP-68 fungible token implemented with Helios.",
+  "repository": "https://github.com/inimrod/cip68-fungible-token-demo.git",
+  "author": "iNimrod <brodlefleur@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "mint-tokens": "node --no-warnings --loader=./loader.js src/cli/mintTokens.ts"
+  },
+  "dependencies": {
+    "@blockfrost/blockfrost-js": "^5.4.0",
+    "@hyperionbt/helios": "0.15.11",
+    "@stricahq/bip32ed25519": "^1.0.4",
+    "bip39": "^3.1.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.7.0",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.2.2"
+  }
+}
