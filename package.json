@@ -7,7 +7,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "mint-tokens": "node --no-warnings --loader=./loader.js src/cli/mintTokens.ts"
+    "mint-tokens": "node --no-warnings --loader=./loader.js src/cli/mint-tokens.ts"
   },
   "dependencies": {
     "@blockfrost/blockfrost-js": "^5.4.0",

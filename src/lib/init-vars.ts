@@ -36,8 +36,8 @@ export async function getInitVars(returnAddr: null | Address = null) {
     const networkParams: NetworkParams = await bfrost.getParameters();
 
     // wallet stuff
-    const seecAcctPhrase = process.env.SEED_ACCT_PHRASE as string;
-    const seedAcct = await getAcctDetails(seecAcctPhrase, 0);
+    const seedAcctPhrase = process.env.SEED_ACCT_PHRASE as string;
+    const seedAcct = await getAcctDetails(seedAcctPhrase, 0);
     const changeAddr = returnAddr ? returnAddr : seedAcct.spendingAddr;
     const txInputs: TxInput[] = await bfrost.getUtxos(changeAddr);
     const remoteWallet = new RemoteWallet(network=="mainnet", [changeAddr], [], txInputs);
