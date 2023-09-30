@@ -1,8 +1,5 @@
-import fs from "fs";
-import path from "path";
 import { getInitVars } from '../lib/init-vars.js';
 import { getWitness } from '../lib/get-witness.js';
-import { getAddressOutputs } from '../lib/get-addr-outputs.js';
 import { initializeSuppyState } from '../lib/init-state.js';
 import { submitTx } from '../lib/submit.js';
 import {
