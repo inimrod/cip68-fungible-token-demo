@@ -62,7 +62,12 @@ const stateSupplyRedeemer = new vars.supplyStateProgram.types.Redeemer.Mint();
 
 
 // inputs
-tx.addInputs(vars.txInputs);
+for (let input of vars.txInputs){
+    // don't spend the UTXO containing the ref token datum
+    if (! input.value.assets.has(vars.mainTokenPolicyHash, vars.TN_mainRefTokenCip68)){
+        tx.addInput(input);
+    }    
+}
 if (vars.supplyStateUtxo) tx.addInput(vars.supplyStateUtxo as TxInput, stateSupplyRedeemer._toUplcData());
 
 
